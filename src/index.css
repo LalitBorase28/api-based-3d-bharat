@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #00bcd4; /* Cyan for MI branding */
+  --color-accent: #ff9800; /* Orange for MI branding */
+  --color-darkbg: #0f172a;
+  --color-card: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(255, 255, 255, 0.15);
+  --shadow-glow: 0 0 40px rgba(0, 188, 212, 0.4);
+  --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------------- GLOBAL RESET ---------------- */
+html {
+  scroll-behavior: smooth;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ---------------- SIDEBAR & NAVBAR ANIMATIONS ---------------- */
+@keyframes notifPulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.4);
+    opacity: 0.7;
+  }
+}
+
+@keyframes orbFloat {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(10px, 15px) scale(1.05);
+  }
+}
+
+/* ---------------- BUTTON & LINK RESET ---------------- */
+/* Remove default browser outlines and focus borders across all interactive elements */
+button,
+a,
+select,
+input,
+textarea {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Ensure focus states don't re-introduce outlines */
+button:focus,
+button:active,
+button:focus-visible,
+a:focus,
+a:active,
+a:focus-visible,
+select:focus,
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Remove blue highlight on mobile devices */
+/* ---------------- UTILITIES ---------------- */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(0, 188, 212, 0.5);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+* {
+  -webkit-tap-highlight-color: transparent;
+}
