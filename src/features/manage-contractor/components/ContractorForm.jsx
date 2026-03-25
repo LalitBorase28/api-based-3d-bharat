@@ -65,6 +65,7 @@ const ContractorForm = ({ initialData, isViewOnly, onSubmit, onCancel }) => {
         <InputField label="Contractor Short Name" name="cont_short_name" value={formData.cont_short_name} onChange={handleChange} placeholder="Short name" required isViewOnly={isViewOnly} />
         <InputField label="Contractor Full Name" name="cont_name" value={formData.cont_name} onChange={handleChange} placeholder="Full name" required isViewOnly={isViewOnly} />
         <ToggleField label="Create Project" name="can_create_project" checked={formData.can_create_project} onChange={handleToggle} isViewOnly={isViewOnly} />
+        <ToggleField label="Link Project" name="can_link_project" checked={formData.can_link_project} onChange={handleToggle} isViewOnly={isViewOnly} />
         <FileField label="Logo" name="logo_file" value={formData.logo_file} onChange={handleFileChange} isViewOnly={isViewOnly} />
       </div>
 
@@ -86,21 +87,33 @@ const ContractorForm = ({ initialData, isViewOnly, onSubmit, onCancel }) => {
         </div>
       </div>
 
-      <div>
-        <SectionHeader icon={Shield} title="Module Access" subtitle="Inspection (1) is independent" isViewOnly={isViewOnly} />
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-3 gap-y-2 px-0.5 mt-2">
-          <ToggleField
-            label="1-Inspection"
-            checked={formData.modules?.includes("inspection")}
-            onChange={() => handleModuleToggle("inspection", !formData.modules?.includes("inspection"))}
-            isViewOnly={isViewOnly}
-          />
-
-          <div className="md:col-span-2 space-y-2 p-2 rounded-xl bg-indigo-50/40 border border-indigo-100/60 transition-all">
-            <div className="flex items-center gap-1.5 px-0.5">
-              <span className="text-[8px] font-semibold text-indigo-700 uppercase tracking-wider bg-white px-2 py-0.5 rounded shadow-sm border border-indigo-200/50">Only select one between 2 and 3</span>
+      <div className="pt-1">
+        <div className="relative p-2 rounded-xl bg-slate-50/30 border border-slate-200/60 shadow-sm overflow-hidden group/frame">
+          <div className="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-slate-100/80">
+            <div className="flex items-center gap-1.5">
+              <div className="p-0.5 rounded bg-indigo-600 text-white">
+                <Shield size={10} strokeWidth={2.5} />
+              </div>
+              <h3 className="text-[8px] font-black text-slate-700 uppercase tracking-wider">Modules</h3>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2.5">
+
+            <div className="flex items-center gap-1.5 bg-white px-1.5 py-0.5 rounded-full border border-indigo-50/50">
+              <div className="w-1 h-1 rounded-full bg-indigo-500 animate-pulse" />
+              <span className="text-[8px] font-bold text-indigo-900 uppercase tracking-tighter">
+                1 Independent | Select Only one from 2 & 3
+              </span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 relative z-10">
+            <ToggleField
+              label="1-Inspection"
+              checked={formData.modules?.includes("inspection")}
+              onChange={() => handleModuleToggle("inspection", !formData.modules?.includes("inspection"))}
+              isViewOnly={isViewOnly}
+            />
+
+            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-2">
               <ToggleField
                 label="2-Work Progress + Design + Measurement"
                 checked={formData.modules?.includes("work_progress")}
@@ -118,7 +131,7 @@ const ContractorForm = ({ initialData, isViewOnly, onSubmit, onCancel }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-2 pt-2.5 mt-1.5 -mx-4 px-4 py-2 border-t border-slate-100 bg-slate-50/40">
+      <div className="flex items-center justify-end gap-2 pt-2.5 mt-1.5 -mx-4 px-4 py-2 bg-slate-50/40">
         <FormButton onClick={onCancel} variant="secondary">{isViewOnly ? "Close" : "Cancel"}</FormButton>
         {!isViewOnly && <FormButton type="submit" variant="primary">{initialData ? "Update" : "Add Contractor"}</FormButton>}
       </div>
