@@ -92,7 +92,7 @@ const ManageDept = () => {
     <div className="min-h-screen">
       {showForm && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-slate-900/50 backdrop-blur-sm p-3 animate-in fade-in" onClick={handleCloseForm}>
-          <div className={`bg-white w-full ${isViewOnly ? 'max-w-xl' : 'max-w-lg'} rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-200/50`} onClick={(e) => e.stopPropagation()}>
+          <div className={`bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 border border-slate-200/50`} onClick={(e) => e.stopPropagation()}>
             <div className="relative bg-[#1e293b] text-white px-5 py-3.5 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center"><LayoutDashboard size={14} /></div>

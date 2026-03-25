@@ -5,7 +5,7 @@ const SectionHeader = ({ icon: Icon, title, isViewOnly }) => (
     <div className={`p-0.5 rounded ${isViewOnly ? 'bg-blue-500' : 'bg-[#1e293b]'}`}>
       <Icon size={10} strokeWidth={2.5} className="text-white" />
     </div>
-    <h3 className="text-[9px] font-black text-slate-800 tracking-wide uppercase">{title}</h3>
+    <h3 className="text-[9px] font-semibold text-slate-800 uppercase">{title}</h3>
   </div>
 );
 

@@ -4,6 +4,8 @@ import InputField from "../../../components/common/InputField";
 import SectionHeader from "../../../components/common/SectionHeader";
 import FormButton from "../../../components/common/FormButton";
 import FileField from "../../../components/common/FileField";
+import ToggleField from "../../../components/common/ToggleField";
+import { Shield } from "lucide-react";
 
 const DeptForm = ({ initialData, isViewOnly, onSubmit, onCancel }) => {
   const [formData, setFormData] = useState(initialData || {
@@ -16,8 +18,28 @@ const DeptForm = ({ initialData, isViewOnly, onSubmit, onCancel }) => {
     head_email: "",
     manager_name: "",
     manager_mobile: "",
-    manager_email: ""
+    manager_email: "",
+    modules: ["inspection"]
   });
+
+  const handleModuleToggle = (moduleName, isChecked) => {
+    if (isViewOnly) return;
+    setFormData(prev => {
+      const currentModules = prev.modules || [];
+      if (isChecked) {
+        let newModules = [...currentModules, moduleName];
+        if (moduleName === "work_progress") {
+          newModules = newModules.filter(m => m !== "drone_target");
+        } else if (moduleName === "drone_target") {
+          newModules = newModules.filter(m => m !== "work_progress");
+        }
+        return { ...prev, modules: Array.from(new Set(newModules)) };
+      } else {
+        if (currentModules.length <= 1) return prev;
+        return { ...prev, modules: currentModules.filter(m => m !== moduleName) };
+      }
+    });
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,33 +57,62 @@ const DeptForm = ({ initialData, isViewOnly, onSubmit, onCancel }) => {
 
   return (
     <form onSubmit={handleSubmit} className="px-4 pb-3 space-y-1">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2.5 gap-y-1.5 pt-2">
-        <InputField label="Short Name" name="dept_name" value={formData.dept_name} onChange={handleChange} placeholder="Short name" required isViewOnly={isViewOnly} />
-        <InputField label="Full Name" name="full_dept_name" value={formData.full_dept_name} onChange={handleChange} placeholder="Full name" required isViewOnly={isViewOnly} />
+      <SectionHeader icon={Building2} title="Department Identity" isViewOnly={isViewOnly} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2.5 gap-y-1.5 pt-1">
+        <InputField label="Department Short Name" name="dept_name" value={formData.dept_name} onChange={handleChange} placeholder="Short name" required isViewOnly={isViewOnly} />
+        <InputField label="Department Full Name" name="full_dept_name" value={formData.full_dept_name} onChange={handleChange} placeholder="Full name" required isViewOnly={isViewOnly} />
         <div className="md:col-span-2">
-          <InputField label="Address" name="dept_address" value={formData.dept_address} onChange={handleChange} placeholder="Address" icon={Building2} isViewOnly={isViewOnly} />
+          <InputField label="Department Address" name="dept_address" value={formData.dept_address} onChange={handleChange} placeholder="Address" icon={Building2} isViewOnly={isViewOnly} />
         </div>
-        <FileField label="Logo" name="logo_file" value={formData.logo_file} onChange={handleFileChange} isViewOnly={isViewOnly} />
+        <FileField label="Department Logo" name="logo_file" value={formData.logo_file} onChange={handleFileChange} isViewOnly={isViewOnly} />
       </div>
 
       <div>
-        <SectionHeader icon={ClipboardCheck} title="Head Details" isViewOnly={isViewOnly} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2.5 gap-y-1.5">
+        <SectionHeader icon={ClipboardCheck} title="Department Head Details" isViewOnly={isViewOnly} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2.5 gap-y-1.5">
           <InputField label="Name" name="head_name" value={formData.head_name} onChange={handleChange} placeholder="Name" required icon={UserCog} isViewOnly={isViewOnly} />
           <InputField label="Mobile" name="head_mobile" value={formData.head_mobile} onChange={handleChange} placeholder="Mobile" required icon={Phone} isViewOnly={isViewOnly} />
-          <div className="md:col-span-2">
-            <InputField label="Email" name="head_email" value={formData.head_email} onChange={handleChange} placeholder="Email" required icon={Mail} isViewOnly={isViewOnly} />
-          </div>
+          <InputField label="Email" name="head_email" value={formData.head_email} onChange={handleChange} placeholder="Email" required icon={Mail} isViewOnly={isViewOnly} />
+        </div>
+      </div>
+
+      <div className="mt-1">
+        <SectionHeader icon={Building2} title="Department Operational Manager Details" isViewOnly={isViewOnly} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-2.5 gap-y-1.5">
+          <InputField label="Name" name="manager_name" value={formData.manager_name} onChange={handleChange} placeholder="Name" required icon={UserCog} isViewOnly={isViewOnly} />
+          <InputField label="Mobile" name="manager_mobile" value={formData.manager_mobile} onChange={handleChange} placeholder="Mobile" required icon={Phone} isViewOnly={isViewOnly} />
+          <InputField label="Email" name="manager_email" value={formData.manager_email} onChange={handleChange} placeholder="Email" required icon={Mail} isViewOnly={isViewOnly} />
         </div>
       </div>
 
       <div>
-        <SectionHeader icon={Building2} title="Manager Details" isViewOnly={isViewOnly} />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2.5 gap-y-1.5">
-          <InputField label="Name" name="manager_name" value={formData.manager_name} onChange={handleChange} placeholder="Name" required icon={UserCog} isViewOnly={isViewOnly} />
-          <InputField label="Mobile" name="manager_mobile" value={formData.manager_mobile} onChange={handleChange} placeholder="Mobile" required icon={Phone} isViewOnly={isViewOnly} />
-          <div className="md:col-span-2">
-            <InputField label="Email" name="manager_email" value={formData.manager_email} onChange={handleChange} placeholder="Email" required icon={Mail} isViewOnly={isViewOnly} />
+        <SectionHeader icon={Shield} title="Module Access" subtitle="Inspection (1) is independent" isViewOnly={isViewOnly} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-3 gap-y-2 px-0.5 mt-2">
+          <ToggleField
+            label="1-Inspection"
+            checked={formData.modules?.includes("inspection")}
+            onChange={() => handleModuleToggle("inspection", !formData.modules?.includes("inspection"))}
+            isViewOnly={isViewOnly}
+          />
+
+          <div className="md:col-span-2 space-y-2 p-2 rounded-xl bg-indigo-50/40 border border-indigo-100/60 transition-all">
+            <div className="flex items-center gap-1.5 px-0.5">
+              <span className="text-[8px] font-semibold text-indigo-700 uppercase tracking-wider bg-white px-2 py-0.5 rounded shadow-sm border border-indigo-200/50">Only select one between 2 and 3</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2.5">
+              <ToggleField
+                label="2-Work Progress + Design + Measurement"
+                checked={formData.modules?.includes("work_progress")}
+                onChange={() => handleModuleToggle("work_progress", !formData.modules?.includes("work_progress"))}
+                isViewOnly={isViewOnly}
+              />
+              <ToggleField
+                label="3-Work Progress + Design + Measurement + Drone Target"
+                checked={formData.modules?.includes("drone_target")}
+                onChange={() => handleModuleToggle("drone_target", !formData.modules?.includes("drone_target"))}
+                isViewOnly={isViewOnly}
+              />
+            </div>
           </div>
         </div>
       </div>
