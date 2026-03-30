@@ -1,18 +1,15 @@
 import React from "react";
 
 const InputField = ({ label, name, value, onChange, type = "text", placeholder, required = false, icon: Icon, isViewOnly }) => (
-  <div className="space-y-0.5">
-    <label className="text-[8.5px] font-bold text-slate-600 uppercase tracking-[0.1em] ml-0.5 flex items-center gap-1">
-      {label} {required && !isViewOnly && <span className="text-rose-400 text-[9px]">*</span>}
+  <div className="flex flex-col gap-1 w-full">
+    <label className="text-label text-slate-500 ml-0.5">
+      {label} {required && !isViewOnly && <span className="text-red-500">*</span>}
     </label>
     <div className="relative group">
       {Icon && (
-        <Icon
-          className={`absolute left-2.5 top-1/2 -translate-y-1/2 transition-colors duration-200 ${isViewOnly ? 'text-slate-500' : 'text-slate-400 group-focus-within:text-indigo-500'
-            }`}
-          size={13}
-          strokeWidth={2.5}
-        />
+        <div className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-500 transition-colors">
+          <Icon className="w-3.5 h-3.5" />
+        </div>
       )}
       <input
         type={type}
@@ -21,9 +18,9 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
         onChange={onChange}
         placeholder={placeholder}
         readOnly={isViewOnly}
-        className={`w-full px-2.5 py-2 ${Icon ? 'pl-8' : ''} border rounded-lg text-[11px] font-medium outline-none transition-all duration-200 placeholder:text-slate-500 text-slate-950 ${isViewOnly
-            ? 'bg-slate-50 border-slate-200 cursor-default'
-            : 'bg-white border-slate-200 hover:border-slate-300 focus:ring-1 focus:ring-indigo-500/10 focus:border-indigo-400'
+        className={`w-full ${Icon ? 'pl-9' : 'px-3'} pr-3 py-1.5 border rounded-lg text-input outline-none transition-all duration-200 placeholder:text-slate-400 text-slate-950 ${isViewOnly
+          ? 'bg-slate-100/80 border-slate-200 cursor-default'
+          : 'bg-slate-100/80 border-slate-200 hover:border-slate-300 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-400'
           }`}
         required={required}
       />
@@ -31,4 +28,6 @@ const InputField = ({ label, name, value, onChange, type = "text", placeholder, 
   </div>
 );
 
+
 export default InputField;
+

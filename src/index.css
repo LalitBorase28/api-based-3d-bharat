@@ -1,8 +1,11 @@
 @import "tailwindcss";
+@import "./styles/typography.css";
 
 @theme {
-  --color-primary: #00bcd4; /* Cyan for MI branding */
-  --color-accent: #ff9800; /* Orange for MI branding */
+  --color-primary: #00bcd4;
+  /* Cyan for MI branding */
+  --color-accent: #ff9800;
+  /* Orange for MI branding */
   --color-darkbg: #0f172a;
   --color-card: rgba(255, 255, 255, 0.08);
   --color-border: rgba(255, 255, 255, 0.15);
@@ -13,8 +16,35 @@
 /* ---------------- GLOBAL RESET ---------------- */
 html {
   scroll-behavior: smooth;
-  max-width: 100%;
+  max-width: 100vw;
   overflow-x: hidden;
+}
+
+body {
+  /* font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------------- CUSTOM SCROLLBARS ---------------- */
+/* For consistent cross-browser experience */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.4);
 }
 
 /* ---------------- SIDEBAR & NAVBAR ANIMATIONS ---------------- */
@@ -45,7 +75,6 @@ html {
 }
 
 /* ---------------- BUTTON & LINK RESET ---------------- */
-/* Remove default browser outlines and focus borders across all interactive elements */
 button,
 a,
 select,
@@ -53,22 +82,9 @@ input,
 textarea {
   outline: none !important;
   box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Ensure focus states don't re-introduce outlines */
-button:focus,
-button:active,
-button:focus-visible,
-a:focus,
-a:active,
-a:focus-visible,
-select:focus,
-input:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
-
-/* Remove blue highlight on mobile devices */
 /* ---------------- UTILITIES ---------------- */
 .glass {
   background: rgba(255, 255, 255, 0.05);
@@ -89,14 +105,32 @@ input:focus {
 }
 
 @keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
 }
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
-* {
-  -webkit-tap-highlight-color: transparent;
+
+
+/* ---------------- LAYOUT SPECIFIC ---------------- */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.2) transparent;
+}
+
+/* Prevent layout shift during transitions */
+.page-transition-container {
+  overflow-x: hidden;
+  width: 100%;
 }

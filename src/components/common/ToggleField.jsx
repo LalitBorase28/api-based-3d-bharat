@@ -1,23 +1,26 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 const ToggleField = ({ label, name, checked, onChange, isViewOnly }) => (
-  <div className="flex items-center justify-between px-2 py-1 bg-white rounded-lg transition-all hover:bg-slate-50 group">
-    <span className="text-[9px] font-bold text-slate-600 uppercase tracking-wide group-hover:text-indigo-700 transition-colors">
+  <div className="flex items-start justify-between gap-3 px-3 py-2 bg-white rounded-xl border border-transparent hover:border-slate-100 transition-all hover:bg-slate-50 group min-h-[44px]">
+    <span className="text-label group-hover:text-indigo-700 transition-colors pt-0.5">
       {label}
     </span>
     <button
       type="button"
       disabled={isViewOnly}
       onClick={() => onChange(name, !checked)}
-      className={`relative inline-flex h-4 w-8 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-all duration-300 ease-in-out ${checked ? 'bg-indigo-600' : 'bg-slate-200'
+      className={`relative w-9 h-5 rounded-full transition-colors duration-200 outline-none shrink-0 ${checked ? 'bg-indigo-600' : 'bg-slate-200'
         } ${isViewOnly ? 'opacity-50 cursor-not-allowed' : ''}`}
     >
-      <span
-        className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow-md ring-0 transition-transform duration-300 ease-in-out ${checked ? 'translate-x-4' : 'translate-x-0'
-          }`}
+      <motion.div
+        animate={{ x: checked ? 18 : 2 }}
+        className="absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-sm"
       />
     </button>
   </div>
 );
 
+
 export default ToggleField;
+

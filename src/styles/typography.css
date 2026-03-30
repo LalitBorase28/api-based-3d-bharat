@@ -1,0 +1,89 @@
+/* 
+  --------------------------------------------------------------------------
+  3D BHARAT DESIGN SYSTEM - TYPOGRAPHY HIERARCHY
+  --------------------------------------------------------------------------
+  This file defines the centralized typography classes for the entire project.
+  Use these classes consistently instead of ad-hoc tailwind sizing.
+*/
+
+@layer components {
+  /* --- HEADINGS --- */
+
+  /* Main Page Titles - Reduced to Bold */
+  .text-h1 {
+    @apply text-lg font-semibold tracking-tight text-slate-800 leading-tight;
+  }
+
+
+  /* Section Titles - BASE (MD Equivalent) */
+  .text-h2 {
+    @apply text-base font-bold tracking-tight text-slate-800 leading-snug;
+  }
+
+  /* Subsection or Modal Headers - SM */
+  .text-h3 {
+    @apply text-sm font-bold tracking-tight text-slate-700;
+  }
+
+
+  /* Small Headers or Table Headers - SM */
+  .text-h4 {
+    @apply text-sm font-bold tracking-normal text-slate-700 uppercase md:normal-case;
+  }
+
+  /* --- BODY TEXT --- */
+
+  /* Standard readable body text - SM */
+  .text-body {
+    @apply text-sm font-medium text-slate-600 leading-relaxed;
+  }
+
+  /* Featured text - BASE */
+  .text-body-lg {
+    @apply text-base font-medium text-slate-600 leading-relaxed;
+  }
+
+  /* Secondary or supporting info - XS */
+  .text-body-sm {
+    @apply text-xs font-medium text-slate-600 leading-normal;
+  }
+
+  /* --- SPECIALTY TEXT --- */
+
+  /* Captions, Help hints - XS */
+  .text-caption {
+    @apply text-xs font-semibold text-slate-500 uppercase tracking-wide;
+  }
+
+  /* Micro Labels (e.g., BADGES) - XS/Labels */
+  .text-label {
+    @apply text-[10px] font-bold text-slate-500 uppercase tracking-[1.2px];
+  }
+
+
+  /* --- INTERACTIVE --- */
+
+  /* Button labels - SM */
+  .text-button {
+    @apply text-sm font-bold tracking-wide;
+  }
+
+  /* Inputs, Selects - SM */
+  .text-input {
+    @apply text-sm font-semibold text-slate-700;
+  }
+
+  /* --- INVERSE (FOR DARK BACKGROUNDS-sidebar) --- */
+
+  .text-h-inv {
+    @apply text-slate-50;
+  }
+
+  .text-body-inv {
+    @apply text-slate-300 text-sm;
+  }
+
+  .text-label-inv {
+    @apply text-slate-400;
+  }
+}

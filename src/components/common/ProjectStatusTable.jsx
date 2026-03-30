@@ -43,67 +43,93 @@ const formatDate = (dateString) => {
 const ProjectStatusTable = ({ projects, title }) => {
   if (!projects || projects.length === 0) return null;
 
-  const thClass = "px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-100";
+  const thClass = "px-6 py-4 text-[10px] font-extrabold uppercase tracking-[1.5px] text-slate-500 border-b border-slate-100 whitespace-nowrap";
 
   return (
-    <div className="mt-8 mb-10 overflow-hidden">
+    <div className="mt-8 mb-12">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 px-1">
-        <div className="flex items-center gap-2">
-          <div className="w-1 h-5 bg-indigo-500 rounded-full" />
-          <h3 className="text-[13px] font-bold text-slate-800 uppercase tracking-tight">{title} <span className="text-slate-400 font-medium">— Projects</span></h3>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 px-1">
+        <div className="flex items-center gap-3">
+          <div className="w-1.5 h-6 bg-indigo-600 rounded-full shadow-[0_0_12px_rgba(79,70,229,0.4)]" />
+          <h3 className="text-h3 text-slate-900 leading-tight">
+            {title} <span className="text-body-sm text-slate-400 ml-1">— All Projects</span>
+          </h3>
         </div>
-        <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-100">{projects.length} Total</span>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          <span className="text-label text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-100">
+            {projects.length} Total Projects
+          </span>
+        </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
+      {/* Table Container */}
+      <div className="bg-white rounded-[24px] border border-slate-200 shadow-sm overflow-hidden transition-all hover:shadow-md">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left min-w-[800px]">
             <thead>
               <tr className="bg-slate-50/50">
-                <th className={`${thClass} w-12 text-center`}>#</th>
+                <th className={`${thClass} w-16 text-center`}>#</th>
                 <th className={`${thClass}`}>Project Details</th>
-                <th className={`${thClass} w-[160px]`}>Location (Km)</th>
-                <th className={`${thClass} w-[120px] text-center`}>Status</th>
-                <th className={`${thClass} w-[160px]`}>Managed By</th>
+                <th className={`${thClass} w-44`}>Chainage Range</th>
+                <th className={`${thClass} w-36 text-center`}>Status</th>
+                <th className={`${thClass} w-48`}>Authored By</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {projects.map((proj, idx) => (
-                <tr key={proj.id} className="hover:bg-slate-50/50 transition-colors">
-                  <td className="px-4 py-4 text-center font-mono text-[11px] font-bold text-slate-400">
-                    {String(idx + 1).padStart(2, '0')}
+                <tr key={proj.id} className="group hover:bg-slate-50/80 transition-all duration-200">
+                  <td className="px-6 py-5 text-center">
+                    <span className="text-caption text-slate-400 group-hover:text-indigo-600 transition-colors">
+                      {String(idx + 1).padStart(2, '0')}
+                    </span>
                   </td>
-                  <td className="px-4 py-4">
-                    <div className="text-[12px] font-bold text-slate-800">{proj.project_name}</div>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded uppercase tracking-tighter">{proj.project_id}</span>
-                      <span className="text-[10px] text-slate-400 truncate max-w-[200px]">{proj.project_description}</span>
+                  <td className="px-6 py-5">
+                    <div className="flex flex-col gap-1">
+                      <div className="text-body font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">
+                        {proj.project_name}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-label text-slate-500 bg-slate-100 px-2 py-0.5 rounded whitespace-nowrap">
+                          {proj.project_id}
+                        </span>
+                        <span className="text-body-sm text-slate-400 line-clamp-1 max-w-[240px]">
+                          {proj.project_description || "No description provided"}
+                        </span>
+                      </div>
                     </div>
                   </td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-1.5 text-slate-600">
-                      <MapPin size={12} className="text-slate-400" />
-                      <span className="font-mono text-[11px] font-bold">
-                        {formatKMCH(proj.from_km, proj.from_chainage)} - {formatKMCH(proj.to_km, proj.to_chainage)}
+                  <td className="px-6 py-5">
+                    <div className="flex items-center gap-2 text-slate-700">
+                      <div className="p-1.5 bg-slate-100 rounded-lg text-slate-400 group-hover:text-indigo-500 group-hover:bg-indigo-50 transition-all">
+                        <MapPin size={12} strokeWidth={2.5} />
+                      </div>
+                      <span className="text-caption text-slate-700">
+                        {formatKMCH(proj.from_km, proj.from_chainage)} <span className="text-slate-300 mx-1">→</span> {formatKMCH(proj.to_km, proj.to_chainage)}
                       </span>
                     </div>
                   </td>
-                  <td className="px-4 py-4 text-center">
+                  <td className="px-6 py-5 text-center">
                     <StatusBadge status={proj.status} type="general" />
                   </td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200/50">
-                        <User2 size={12} className="text-slate-500" />
+                  <td className="px-6 py-5">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200/50 group-hover:border-indigo-100 group-hover:bg-indigo-50 transition-all">
+                        <User2 size={14} className="text-slate-500 group-hover:text-indigo-500" />
                       </div>
-                      <div className="flex flex-col">
-                        <span className="text-[11px] font-bold text-slate-700 leading-tight">{proj.added_by_name || "—"}</span>
-                        <span className="text-[9px] text-slate-400 font-medium mt-0.5">{formatDate(proj.inserted_on)}</span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-body-sm font-bold text-slate-800 leading-none truncate">
+                          {proj.added_by_name || "System"}
+                        </span>
+                        <div className="flex items-center gap-1 mt-1.5">
+                          <CalendarDays size={10} className="text-slate-300" />
+                          <span className="text-label text-slate-400">
+                            {formatDate(proj.inserted_on)}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </td>
+
                 </tr>
               ))}
             </tbody>
@@ -113,5 +139,6 @@ const ProjectStatusTable = ({ projects, title }) => {
     </div>
   );
 };
+
 
 export default ProjectStatusTable;

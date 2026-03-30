@@ -1,5 +1,5 @@
 import React from "react";
-import ManageDept from "../features/manage-dept/ManageDept";
+import ManageDept from "../features/manage-dept/ManageDept.jsx";
 
 const ManageDeptPage = () => {
   return (

@@ -24,7 +24,18 @@ const AppRouter = () => {
             isLoggedIn ? (
               <Navigate to="/dashboard" />
             ) : (
-              <Home setIsLoggedIn={setIsLoggedIn} />
+              <Login setIsLoggedIn={setIsLoggedIn} />
+            )
+          }
+        />
+
+        <Route
+          path="/login"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <Login setIsLoggedIn={setIsLoggedIn} />
             )
           }
         />
