@@ -23,8 +23,11 @@ import {
   mobileSchema,
   emailSchema,
   nameSchema,
-  shortNameSchema
+  shortNameSchema,
+  logoSchema
 } from "../../../utils/validation";
+
+import { createDepartment } from "../services/deptService";
 
 const DeptForm = ({ isOpen, onClose, onSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,6 +38,7 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
       .min(5, "Full name too short")
       .required("Required"),
     address: Yup.string().optional(),
+    logo: logoSchema,
     head: Yup.object().shape({
       name: nameSchema,
       mobile: mobileSchema,
@@ -66,39 +70,24 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
-        const data = new FormData();
-        data.append("dept_full_name", values.fullName);
-        data.append("dept_short_name", values.shortName);
-        if (values.logo) data.append("dept_logo", values.logo);
+        const response = await createDepartment(values);
+        console.log("Department Created Response:", response);
 
-        data.append(
-          "required_modules",
-          values.modules.workProgress2 ? 3 : values.modules.workProgress1 ? 2 : 1
-        );
-        data.append("created_by", 1);
-        data.append("created_by_id", 1101);
-
-        data.append("dept_head_name", values.head.name);
-        data.append("dept_head_mobile", values.head.mobile);
-        data.append("dept_head_email", values.head.email);
-
-        data.append("operational_manager_name", values.manager.name);
-        data.append("operational_manager_mobile", values.manager.mobile);
-        data.append("operational_manager_email", values.manager.email);
-
-        await api.post("/data/create-department", data);
         toast.success("Department created successfully!");
         formik.resetForm();
         if (onSuccess) onSuccess();
         onClose();
 
       } catch (error) {
+        console.error("Submission Error:", error);
         toast.error(error.message || "Failed to create department.");
       } finally {
         setIsSubmitting(false);
       }
     },
   });
+
+
 
   // Ensure form is fresh on open/close
   useEffect(() => {
@@ -133,14 +122,17 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
         className="bg-white rounded-[20px] shadow-2xl w-full max-w-3xl max-h-[95vh] overflow-hidden flex flex-col"
       >
         {/* Header */}
-        <div className="bg-[#1e293b] p-3 px-5 flex items-center justify-between">
+        <div className="bg-slate-900 p-4 px-6 flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="p-1.5 bg-indigo-500 rounded-lg text-white shadow-lg shadow-indigo-500/30">
+            <div className="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-600/30">
               <LayoutGrid className="w-5 h-5" />
             </div>
-            <h2 className="text-lg font-bold text-white tracking-tight">
-              Add New Department
-            </h2>
+            <div>
+              <h2 className="text-sm font-bold text-white uppercase tracking-widest">
+                Infrastructure Management
+              </h2>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-0.5">Add New Department</p>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -209,7 +201,10 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                 name="logo"
                 value={formik.values.logo}
                 onChange={(name, value) => formik.setFieldValue(name, value)}
+                error={formik.touched.logo && formik.errors.logo}
+                required
               />
+
             </section>
 
             {/* Combined Contacts Grid */}
@@ -374,7 +369,7 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
           <button
             onClick={formik.handleSubmit}
             disabled={isSubmitting}
-            className="px-6 py-2 bg-[#1e293b] text-white text-xs font-bold rounded-lg hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-2 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border border-slate-700"
           >
             {isSubmitting ? (
               <>
@@ -382,7 +377,7 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                 Processing...
               </>
             ) : (
-              "Add Department"
+              "Confirm & Add"
             )}
           </button>
         </div>

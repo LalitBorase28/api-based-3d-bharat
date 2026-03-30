@@ -4,6 +4,11 @@ import * as Yup from "yup";
  * Single Source of Truth for Platform Validation Rules
  */
 
+// Global Image Constants
+const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/webp"];
+const MAX_FILE_SIZE = 6 * 1024 * 1024; // 6MB
+
+
 // 1. Mobile Number (10 digits, starts with 6-9)
 export const mobileSchema = Yup.string()
   .matches(/^[6-9]\d{9}$/, "10 digits, starts with 6-9")
@@ -35,3 +40,15 @@ export const passwordSchema = Yup.string()
 
 // 6. Generic Required String
 export const requiredString = Yup.string().required("Required");
+
+// 7. Image/Logo Schema (JPG, PNG, WEBP, <6MB)
+export const logoSchema = Yup.mixed()
+  .required("Required")
+  .test("fileSize", "File too large (Max 6MB)", (value) => 
+    !value || (value && value.size <= MAX_FILE_SIZE)
+  )
+  .test("fileFormat", "Unsupported Format (Use JPG, PNG, WEBP)", (value) => 
+    !value || (value && SUPPORTED_FORMATS.includes(value.type))
+  );
+
+
