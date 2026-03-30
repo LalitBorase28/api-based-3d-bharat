@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import {
   X,
   LayoutGrid,
@@ -7,7 +8,7 @@ import {
   Phone,
   Mail,
   Shield,
-  CircleCheck
+  CircleCheck,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import SectionHeader from "../../../components/common/SectionHeader.jsx";
@@ -16,125 +17,153 @@ import ToggleField from "../../../components/common/ToggleField.jsx";
 import FileField from "../../../components/common/FileField.jsx";
 import { toast } from "react-toastify";
 import api from "../../../services/api";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { 
+  mobileSchema, 
+  emailSchema, 
+  nameSchema, 
+  shortNameSchema 
+} from "../../../utils/validation";
 
 const DeptForm = ({ isOpen, onClose, onSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formData, setFormData] = useState({
-    shortName: "",
-    fullName: "",
-    address: "",
-    logo: null,
-    head: { name: "", mobile: "", email: "" },
-    manager: { name: "", mobile: "", email: "" },
-    modules: {
-      inspection: true,
-      workProgress1: false,
-      workProgress2: false,
-    }
+
+  const validationSchema = Yup.object().shape({
+    shortName: shortNameSchema,
+    fullName: Yup.string()
+      .min(5, "Full name too short")
+      .required("Required"),
+    address: Yup.string().optional(),
+    head: Yup.object().shape({
+      name: nameSchema,
+      mobile: mobileSchema,
+      email: emailSchema,
+    }),
+    manager: Yup.object().shape({
+      name: nameSchema,
+      mobile: mobileSchema,
+      email: emailSchema,
+    }),
   });
+
+
+  const formik = useFormik({
+    initialValues: {
+      shortName: "",
+      fullName: "",
+      address: "",
+      logo: null,
+      head: { name: "", mobile: "", email: "" },
+      manager: { name: "", mobile: "", email: "" },
+      modules: {
+        inspection: true,
+        workProgress1: false,
+        workProgress2: false,
+      },
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setIsSubmitting(true);
+      try {
+        const data = new FormData();
+        data.append("dept_full_name", values.fullName);
+        data.append("dept_short_name", values.shortName);
+        if (values.logo) data.append("dept_logo", values.logo);
+        
+        data.append(
+          "required_modules",
+          values.modules.workProgress2 ? 3 : values.modules.workProgress1 ? 2 : 1
+        );
+        data.append("created_by", 1);
+        data.append("created_by_id", 1101);
+
+        data.append("dept_head_name", values.head.name);
+        data.append("dept_head_mobile", values.head.mobile);
+        data.append("dept_head_email", values.head.email);
+
+        data.append("operational_manager_name", values.manager.name);
+        data.append("operational_manager_mobile", values.manager.mobile);
+        data.append("operational_manager_email", values.manager.email);
+
+        await api.post("/data/create-department", data);
+        toast.success("Department created successfully!");
+        formik.resetForm();
+        if (onSuccess) onSuccess();
+        onClose();
+
+      } catch (error) {
+        toast.error(error.message || "Failed to create department.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+  });
+
+  // Ensure form is fresh on open/close
+  useEffect(() => {
+    if (!isOpen) {
+      formik.resetForm();
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
+
   const handleModuleToggle = (name, value) => {
-    setFormData(prev => {
-      const newModules = { ...prev.modules };
-      if (name === 'workProgress1') {
-        newModules.workProgress1 = value;
-        if (value) newModules.workProgress2 = false;
-      } else if (name === 'workProgress2') {
-        newModules.workProgress2 = value;
-        if (value) newModules.workProgress1 = false;
-      } else {
-        newModules[name] = value;
-      }
-      return { ...prev, modules: newModules };
-    });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleNestedChange = (role, e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [role]: { ...prev[role], [name]: value }
-    }));
-  };
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    try {
-      const payload = {
-        dept_full_name: formData.fullName,
-        dept_short_name: formData.shortName,
-        dept_logo: formData.logo || "", // If file upload is not supported via JSON, this might need adjustment
-        status: 2,
-        required_modules: formData.modules.workProgress2 ? 3 : (formData.modules.workProgress1 ? 2 : 1),
-        created_by: 1,
-        created_by_id: 1101,
-        dept_head_name: formData.head.name,
-        dept_head_mobile: formData.head.mobile,
-        dept_head_email: formData.head.email,
-        operational_manager_name: formData.manager.name,
-        operational_manager_mobile: formData.manager.mobile,
-        operational_manager_email: formData.manager.email
-      };
-
-      // Execute API call with JSON payload
-      await api.post('/data/create-department', payload);
-
-      toast.success("Department created successfully!");
-      if (onSuccess) onSuccess();
-      onClose();
-    } catch (error) {
-      toast.error(error.message || "Failed to create department. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+    const newModules = { ...formik.values.modules };
+    if (name === "workProgress1") {
+      newModules.workProgress1 = value;
+      if (value) newModules.workProgress2 = false;
+    } else if (name === "workProgress2") {
+      newModules.workProgress2 = value;
+      if (value) newModules.workProgress1 = false;
+    } else {
+      newModules[name] = value;
     }
+    formik.setFieldValue("modules", newModules);
   };
+
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm transition-all duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 bg-slate-900/60 backdrop-blur-[2px]">
       <motion.div
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="bg-white sm:rounded-[24px] shadow-2xl w-full h-full sm:h-auto max-w-4xl max-h-[100vh] sm:max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-white rounded-[20px] shadow-2xl w-full max-w-3xl max-h-[95vh] overflow-hidden flex flex-col"
       >
         {/* Header */}
-        <div className="bg-slate-900 p-4 sm:p-5 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-500/30">
-              <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6" />
+        <div className="bg-[#1e293b] p-3 px-5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="p-1.5 bg-indigo-500 rounded-lg text-white shadow-lg shadow-indigo-500/30">
+              <LayoutGrid className="w-5 h-5" />
             </div>
-            <div>
-              <h2 className="text-h2 text-white">Add New Department</h2>
-              <p className="text-caption text-slate-400">Please fill in the department details below</p>
-            </div>
+            <h2 className="text-lg font-bold text-white tracking-tight">
+              Add New Department
+            </h2>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition-all active:scale-90"
+            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
           >
-            <X className="w-5 h-5 sm:w-6 sm:h-6" />
+            <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6 custom-scrollbar">
-          <div className="space-y-8 sm:space-y-10">
+        <div className="py-3 px-5 overflow-y-auto custom-scrollbar">
+          <div className="space-y-4">
             {/* Identity Section */}
-            <section className="space-y-4">
+            <section>
               <SectionHeader icon={Shield} title="Department Identity" />
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                 <InputField
                   label="Department Short Name"
                   name="shortName"
-                  value={formData.shortName}
-                  onChange={handleInputChange}
+                  value={formik.values.shortName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.shortName && formik.errors.shortName}
                   placeholder="Ex: PWD-MH"
                   icon={User}
                   required
@@ -142,60 +171,83 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                 <InputField
                   label="Department Full Name"
                   name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  placeholder="Ex: Public Works Department"
+                  value={formik.values.fullName}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.fullName && formik.errors.fullName}
+                  placeholder="Ex: Public Works Department, Maharashtra"
                   icon={User}
                   required
                 />
               </div>
-              <InputField
-                label="Department Address"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                placeholder="Enter full department address"
-                icon={Home}
-              />
+              <div className="mb-3">
+                <InputField
+                  label="Department Address"
+                  name="address"
+                  value={formik.values.address}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.address && formik.errors.address}
+                  placeholder="Enter full department address"
+                  icon={Home}
+                />
+              </div>
               <FileField
                 label="Department Logo"
                 name="logo"
-                value={formData.logo}
-                onChange={(name, value) => setFormData(prev => ({ ...prev, [name]: value }))}
+                value={formik.values.logo}
+                onChange={(name, value) => formik.setFieldValue(name, value)}
               />
             </section>
 
-            {/* Contacts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12">
+            {/* Combined Contacts Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
               {/* Head Details */}
-              <section className="space-y-4">
-                <SectionHeader icon={CircleCheck} title="Department Head" />
-                <div className="space-y-4">
+              <section>
+                <SectionHeader
+                  icon={CircleCheck}
+                  title="Department Head Details"
+                />
+                <div className="space-y-2">
                   <InputField
                     label="Name"
-                    name="name"
-                    value={formData.head.name}
-                    onChange={(e) => handleNestedChange('head', e)}
-                    placeholder="Head Name"
+                    name="head.name"
+                    value={formik.values.head.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.head?.name && formik.errors.head?.name}
+                    placeholder="Ex: John Doe"
                     icon={User}
                     required
+                    maxLength={30}
                   />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                  <div className="grid grid-cols-2 gap-3">
                     <InputField
                       label="Mobile"
-                      name="mobile"
-                      value={formData.head.mobile}
-                      onChange={(e) => handleNestedChange('head', e)}
-                      placeholder="Mobile No."
+                      name="head.mobile"
+                      value={formik.values.head.mobile}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, "");
+                        if (val.length <= 10 && (val.length === 0 || /^[6-9]/.test(val))) {
+                          formik.setFieldValue("head.mobile", val);
+                        }
+                      }}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.head?.mobile && formik.errors.head?.mobile}
+                      placeholder="Ex: 9876543210"
                       icon={Phone}
                       required
                     />
+
                     <InputField
                       label="Email"
-                      name="email"
-                      value={formData.head.email}
-                      onChange={(e) => handleNestedChange('head', e)}
-                      placeholder="Email Address"
+                      name="head.email"
+                      value={formik.values.head.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.head?.email && formik.errors.head?.email}
+                      placeholder="Ex: head@dept.com"
                       icon={Mail}
                       required
                     />
@@ -204,34 +256,51 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
               </section>
 
               {/* Manager Details */}
-              <section className="space-y-4">
-                <SectionHeader icon={CircleCheck} title="Operational Manager" />
-                <div className="space-y-4">
+              <section>
+                <SectionHeader
+                  icon={CircleCheck}
+                  title="Department Operational Manager Details"
+                />
+                <div className="space-y-3">
                   <InputField
                     label="Name"
-                    name="name"
-                    value={formData.manager.name}
-                    onChange={(e) => handleNestedChange('manager', e)}
-                    placeholder="Manager Name"
+                    name="manager.name"
+                    value={formik.values.manager.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    error={formik.touched.manager?.name && formik.errors.manager?.name}
+                    placeholder="Ex: Jane Smith"
                     icon={User}
                     required
+                    maxLength={30}
                   />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+                  <div className="grid grid-cols-2 gap-3">
                     <InputField
                       label="Mobile"
-                      name="mobile"
-                      value={formData.manager.mobile}
-                      onChange={(e) => handleNestedChange('manager', e)}
-                      placeholder="Mobile No."
+                      name="manager.mobile"
+                      value={formik.values.manager.mobile}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, "");
+                        if (val.length <= 10 && (val.length === 0 || /^[6-9]/.test(val))) {
+                          formik.setFieldValue("manager.mobile", val);
+                        }
+                      }}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.manager?.mobile && formik.errors.manager?.mobile}
+                      placeholder="Ex: 9876543210"
                       icon={Phone}
                       required
                     />
+
                     <InputField
                       label="Email"
-                      name="email"
-                      value={formData.manager.email}
-                      onChange={(e) => handleNestedChange('manager', e)}
-                      placeholder="Email Address"
+                      name="manager.email"
+                      value={formik.values.manager.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      error={formik.touched.manager?.email && formik.errors.manager?.email}
+                      placeholder="Ex: manager@dept.com"
                       icon={Mail}
                       required
                     />
@@ -241,30 +310,30 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
             </div>
 
             {/* Modules Section */}
-            <section className="space-y-4 pb-4">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <SectionHeader icon={Shield} title="Access Modules" />
-                <span className="text-label text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full self-start">
-                  Select requirement level
-                </span>
+            <section>
+              <div className="flex items-center justify-between mb-2">
+                <SectionHeader icon={Shield} title="Modules" />
+                <div className="text-[9px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                  Select only one from 2 & 3
+                </div>
               </div>
-              <div className="bg-slate-50 border border-slate-100 p-4 sm:p-5 rounded-2xl grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="bg-slate-50 border border-slate-100 p-2.5 rounded-2xl grid grid-cols-1 md:grid-cols-3 gap-3">
                 <ToggleField
                   label="1-Inspection"
                   name="inspection"
-                  checked={formData.modules.inspection}
+                  checked={formik.values.modules.inspection}
                   onChange={handleModuleToggle}
                 />
                 <ToggleField
-                  label="2-Work Progress (v1)"
+                  label="2-Work Progress + Design + Measurement"
                   name="workProgress1"
-                  checked={formData.modules.workProgress1}
+                  checked={formik.values.modules.workProgress1}
                   onChange={handleModuleToggle}
                 />
                 <ToggleField
-                  label="3-Work Progress (v2)"
+                  label="3-Work Progress + Design + Measurement + Drone"
                   name="workProgress2"
-                  checked={formData.modules.workProgress2}
+                  checked={formik.values.modules.workProgress2}
                   onChange={handleModuleToggle}
                 />
               </div>
@@ -273,26 +342,26 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 sm:p-6 border-t border-slate-100 flex flex-col-reverse sm:flex-row justify-end gap-3 bg-white shrink-0">
+        <div className="p-4 px-6 border-t border-slate-100 flex justify-end gap-3 bg-white">
           <button
             onClick={onClose}
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-8 py-3 border border-slate-200 text-slate-600 text-button rounded-xl hover:bg-slate-50 transition-all disabled:opacity-50"
+            className="px-6 py-2 border border-slate-200 text-slate-600 text-xs font-bold rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
           >
             Cancel
           </button>
           <button
-            onClick={handleSubmit}
+            onClick={formik.handleSubmit}
             disabled={isSubmitting}
-            className="w-full sm:w-auto px-8 py-3 bg-slate-900 text-white text-button rounded-xl hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3"
+            className="px-6 py-2 bg-[#1e293b] text-white text-xs font-bold rounded-lg hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isSubmitting ? (
               <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                <span>Processing...</span>
+                <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Processing...
               </>
             ) : (
-              "Create Department"
+              "Add Department"
             )}
           </button>
         </div>
@@ -303,4 +372,3 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
 };
 
 export default DeptForm;
-

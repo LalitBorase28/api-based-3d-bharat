@@ -14,6 +14,7 @@
     "@react-three/fiber": "^9.4.2",
     "axios": "^1.13.6",
     "emailjs-com": "^3.2.0",
+    "formik": "^2.4.9",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
@@ -22,7 +23,8 @@
     "react-router-dom": "^7.11.0",
     "react-router-hash-link": "^2.4.3",
     "react-toastify": "^11.0.5",
-    "three": "^0.182.0"
+    "three": "^0.182.0",
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",

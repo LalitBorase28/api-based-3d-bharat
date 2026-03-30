@@ -57,7 +57,7 @@
 
   /* Micro Labels (e.g., BADGES) - XS/Labels */
   .text-label {
-    @apply text-[10px] font-bold text-slate-500 uppercase tracking-[1.2px];
+    @apply text-[10px] font-semibold text-slate-700 uppercase tracking-[1.2px];
   }
 
 
@@ -70,7 +70,7 @@
 
   /* Inputs, Selects - SM */
   .text-input {
-    @apply text-sm font-semibold text-slate-700;
+    @apply text-xs text-slate-700;
   }
 
   /* --- INVERSE (FOR DARK BACKGROUNDS-sidebar) --- */

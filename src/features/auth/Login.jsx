@@ -1,28 +1,37 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Lock, Mail, ShieldCheck } from "lucide-react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { emailSchema, passwordSchema } from "../../utils/validation";
 
 const Login = ({ setIsLoggedIn }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object().shape({
+      email: emailSchema,
+      password: passwordSchema,
+    }),
+    onSubmit: (values) => {
+      setIsAuthenticating(true);
+      // Dummy login simulation
+      setTimeout(() => {
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("role", "owner");
+        localStorage.setItem("email", values.email);
 
-    // Dummy login simulation
-    setTimeout(() => {
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("role", "owner");
-      localStorage.setItem("email", email);
-
-      setIsLoggedIn(true);
-      navigate("/dashboard");
-      setIsLoading(false);
-    }, 800);
-  };
+        setIsLoggedIn(true);
+        navigate("/dashboard");
+        setIsAuthenticating(false);
+      }, 800);
+    },
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0f172a] relative overflow-hidden">
@@ -38,50 +47,74 @@ const Login = ({ setIsLoggedIn }) => {
               <ShieldCheck className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-h1 text-white">MI Owner Login</h1>
-            <p className="text-body-sm text-slate-400 mt-1">3D Bharat Platform Administration</p>
+            <p className="text-body text-slate-400 mt-1">3D Bharat Platform Administration</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={formik.handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <label className="text-label text-slate-400 ml-1">Email Address</label>
+              <div className="flex justify-between items-center px-1">
+                <label className="text-label text-slate-400">Email Address</label>
+                {formik.touched.email && formik.errors.email && (
+                  <span className="text-[10px] font-bold text-red-400 animate-in fade-in slide-in-from-right-1">
+                    {formik.errors.email}
+                  </span>
+                )}
+              </div>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                  <Mail className={`h-5 w-5 transition-colors ${formik.touched.email && formik.errors.email ? 'text-red-400' : 'text-slate-500 group-focus-within:text-indigo-400'}`} />
                 </div>
                 <input
                   type="email"
+                  name="email"
                   placeholder="admin@mi-owner.com"
-                  className="block w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-input text-white placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 focus:bg-white/10 transition-all outline-none"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  className={`block w-full pl-11 pr-4 py-3 bg-white/5 border rounded-2xl text-input text-white placeholder:text-[10.5px] placeholder:text-slate-500 focus:ring-2 focus:bg-white/10 transition-all outline-none ${
+                    formik.touched.email && formik.errors.email 
+                      ? 'border-red-400/50 focus:ring-red-400/20' 
+                      : 'border-white/10 focus:ring-indigo-500/50'
+                  }`}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-label text-slate-400 ml-1">Password</label>
+              <div className="flex justify-between items-center px-1">
+                <label className="text-label text-slate-400">Password</label>
+                {formik.touched.password && formik.errors.password && (
+                  <span className="text-[10px] font-bold text-red-400 animate-in fade-in slide-in-from-right-1">
+                    {formik.errors.password}
+                  </span>
+                )}
+              </div>
               <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors" />
+                  <Lock className={`h-5 w-5 transition-colors ${formik.touched.password && formik.errors.password ? 'text-red-400' : 'text-slate-500 group-focus-within:text-indigo-400'}`} />
                 </div>
                 <input
                   type="password"
+                  name="password"
                   placeholder="••••••••"
-                  className="block w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-input text-white placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 focus:bg-white/10 transition-all outline-none"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  className={`block w-full pl-11 pr-4 py-3 bg-white/5 border rounded-2xl text-input text-white placeholder:text-[10.5px] placeholder:text-slate-500 focus:ring-2 focus:bg-white/10 transition-all outline-none ${
+                    formik.touched.password && formik.errors.password 
+                      ? 'border-red-400/50 focus:ring-red-400/20' 
+                      : 'border-white/10 focus:ring-indigo-500/50'
+                  }`}
+                  value={formik.values.password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isAuthenticating}
               className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white py-3.5 rounded-2xl text-button shadow-lg shadow-indigo-500/25 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-3 mt-4"
             >
-              {isLoading ? (
+              {isAuthenticating ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   <span>Authenticating...</span>
@@ -106,3 +139,4 @@ const Login = ({ setIsLoggedIn }) => {
 };
 
 export default Login;
+

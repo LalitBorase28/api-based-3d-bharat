@@ -19,7 +19,7 @@ const MainLayout = () => {
         <Navbar onMenuClick={toggleMobileMenu} />
 
         {/* Main Content Area */}
-        <main className="flex-1 overflow-y-auto px-4 py-4 md:px-6 md:py-6 lg:px-8">
+        <main className="flex-1 overflow-y-auto px-4 py-4 md:px-6 md:py-6">
           <div className="max-w-7xl mx-auto w-full">
             <Outlet />
           </div>
@@ -38,4 +38,3 @@ const MainLayout = () => {
 };
 
 export default MainLayout;
-
