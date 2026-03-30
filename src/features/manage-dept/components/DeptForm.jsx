@@ -19,11 +19,11 @@ import { toast } from "react-toastify";
 import api from "../../../services/api";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { 
-  mobileSchema, 
-  emailSchema, 
-  nameSchema, 
-  shortNameSchema 
+import {
+  mobileSchema,
+  emailSchema,
+  nameSchema,
+  shortNameSchema
 } from "../../../utils/validation";
 
 const DeptForm = ({ isOpen, onClose, onSuccess }) => {
@@ -70,7 +70,7 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
         data.append("dept_full_name", values.fullName);
         data.append("dept_short_name", values.shortName);
         if (values.logo) data.append("dept_logo", values.logo);
-        
+
         data.append(
           "required_modules",
           values.modules.workProgress2 ? 3 : values.modules.workProgress1 ? 2 : 1
@@ -161,24 +161,36 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                   label="Department Short Name"
                   name="shortName"
                   value={formik.values.shortName}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^a-zA-Z]/g, "").toUpperCase();
+                    if (val.length <= 12) {
+                      formik.setFieldValue("shortName", val);
+                    }
+                  }}
                   onBlur={formik.handleBlur}
                   error={formik.touched.shortName && formik.errors.shortName}
-                  placeholder="Ex: PWD-MH"
+                  placeholder="Ex: PWDMH"
                   icon={User}
                   required
                 />
+
                 <InputField
                   label="Department Full Name"
                   name="fullName"
                   value={formik.values.fullName}
-                  onChange={formik.handleChange}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                    if (val.length <= 50) { // Allowing slightly more for full name
+                      formik.setFieldValue("fullName", val);
+                    }
+                  }}
                   onBlur={formik.handleBlur}
                   error={formik.touched.fullName && formik.errors.fullName}
                   placeholder="Ex: Public Works Department, Maharashtra"
                   icon={User}
                   required
                 />
+
               </div>
               <div className="mb-3">
                 <InputField
@@ -213,7 +225,12 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                     label="Name"
                     name="head.name"
                     value={formik.values.head.name}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                      if (val.length <= 30) {
+                        formik.setFieldValue("head.name", val);
+                      }
+                    }}
                     onBlur={formik.handleBlur}
                     error={formik.touched.head?.name && formik.errors.head?.name}
                     placeholder="Ex: John Doe"
@@ -221,7 +238,6 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                     required
                     maxLength={30}
                   />
-
                   <div className="grid grid-cols-2 gap-3">
                     <InputField
                       label="Mobile"
@@ -239,7 +255,6 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                       icon={Phone}
                       required
                     />
-
                     <InputField
                       label="Email"
                       name="head.email"
@@ -266,7 +281,12 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                     label="Name"
                     name="manager.name"
                     value={formik.values.manager.name}
-                    onChange={formik.handleChange}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                      if (val.length <= 30) {
+                        formik.setFieldValue("manager.name", val);
+                      }
+                    }}
                     onBlur={formik.handleBlur}
                     error={formik.touched.manager?.name && formik.errors.manager?.name}
                     placeholder="Ex: Jane Smith"
@@ -274,6 +294,7 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
                     required
                     maxLength={30}
                   />
+
 
                   <div className="grid grid-cols-2 gap-3">
                     <InputField
