@@ -14,11 +14,11 @@ import {
 
 const DeptTable = ({ departments, onViewClick }) => {
   return (
-    <div className="w-full bg-indigo-200 overflow-x-auto custom-scrollbar border border-slate-100 rounded-2xl shadow-sm">
+    <div className="w-full bg-slate-50 overflow-x-auto custom-scrollbar border border-slate-100 rounded-2xl shadow-sm">
       <table className="w-full border-collapse min-w-[1000px] xl:min-w-full">
         <thead>
-          <tr className="bg-slate-900 border-b border-slate-700">
-            <th className="py-3 px-3 w-10 text-center rounded-tl-2xl border-r border-slate-300/50">
+          <tr className="bg-[#020617] border-b border-slate-800">
+            <th className="py-3 px-3 w-10 text-center rounded-tl-2xl border-r border-slate-800">
               <input type="checkbox" className="w-3.5 h-3.5 rounded-md accent-indigo-600 cursor-pointer" />
             </th>
             <th className="py-3 px-2 text-table-head text-center w-16 border-r border-slate-300/50">Logo</th>
@@ -92,9 +92,9 @@ const DeptTable = ({ departments, onViewClick }) => {
 
               <td className="py-2.5 px-2 text-center border-r border-slate-100">
                 <div className="flex justify-center">
-                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-label border shadow-sm ${dept.status === 1
-                    ? 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                    : 'bg-amber-50 text-amber-600 border-amber-100'
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold border shadow-sm ${dept.status === 1
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
+                    : 'bg-amber-50 text-amber-700 border-amber-100'
                     }`}>
                     <div className={`w-1 h-1 rounded-full ${dept.status === 1 ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                     {dept.status === 1 ? "Active" : "Pending"}
@@ -104,20 +104,20 @@ const DeptTable = ({ departments, onViewClick }) => {
 
               <td className="py-2.5 px-3">
                 <div className="flex justify-center">
-                  <div className="inline-flex items-center bg-[#fffbf5] px-3 py-1.5 rounded-xl border border-[#fee9c5] shadow-sm gap-4 transition-all duration-300 hover:shadow-md hover:border-orange-200">
+                  <div className="inline-flex items-center bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm gap-4 transition-all duration-300 hover:shadow-md hover:border-indigo-200 group-hover:bg-white">
                     <button
                       onClick={() => onViewClick(dept)}
-                      className="text-orange-500/80 hover:text-orange-600 transition-colors"
+                      className="text-blue-400 hover:text-indigo-600 transition-colors"
                     >
                       <Eye className="w-3.5 h-3.5" />
                     </button>
-                    <button className="text-blue-500/80 hover:text-blue-600 transition-colors">
+                    <button className="text-blue-400 hover:text-blue-600 transition-colors">
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
-                    <button className="text-emerald-500/80 hover:text-emerald-600 transition-colors">
+                    <button className="text-red-400 hover:text-red-600 transition-colors">
                       <Power className="w-3.5 h-3.5" />
                     </button>
-                    <button className="text-red-400/80 hover:text-red-500 transition-colors border-l border-orange-100 pl-3.5 ml-0">
+                    <button className="text-slate-400 hover:text-rose-500 transition-colors border-l border-slate-200 pl-3.5 ml-0">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>

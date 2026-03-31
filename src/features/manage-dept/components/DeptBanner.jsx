@@ -23,7 +23,7 @@ const DeptBanner = ({ onAddClick }) => {
 
       <button
         onClick={onAddClick}
-        className="w-full md:w-auto flex items-center justify-center gap-1.5 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-250 active:scale-95 shadow-xl shadow-slate-200 border border-slate-700"
+        className="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold uppercase tracking-wider transition-all duration-300 active:scale-95 shadow-xl shadow-indigo-100 border border-indigo-500/50"
       >
         <Plus className="w-4 h-4" />
         Add New Department

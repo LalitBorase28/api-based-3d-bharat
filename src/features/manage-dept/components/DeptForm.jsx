@@ -122,21 +122,21 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
         className="bg-white rounded-[20px] shadow-2xl w-full max-w-3xl max-h-[95vh] overflow-hidden flex flex-col"
       >
         {/* Header */}
-        <div className="bg-slate-900 p-4 px-6 flex items-center justify-between border-b border-slate-800">
+        <div className="bg-[#020617] p-4 px-6 flex items-center justify-between border-b border-slate-800">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-600/30">
+            <div className="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-600/30 font-bold uppercase tracking-widest text-[10px]">
               <LayoutGrid className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-sm font-bold text-white uppercase tracking-widest">
                 Infrastructure Management
               </h2>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-0.5">Add New Department</p>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-0.5">Add New Department</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+            className="p-1.5 hover:bg-white/10 rounded-lg text-slate-500 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -369,7 +369,7 @@ const DeptForm = ({ isOpen, onClose, onSuccess }) => {
           <button
             onClick={formik.handleSubmit}
             disabled={isSubmitting}
-            className="px-6 py-2 bg-slate-900 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-slate-800 shadow-xl shadow-slate-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border border-slate-700"
+            className="px-6 py-2 bg-indigo-600 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 border border-indigo-500/50"
           >
             {isSubmitting ? (
               <>

@@ -26,21 +26,21 @@ const DeptView = ({ isOpen, onClose, department }) => {
           className="bg-white rounded-[20px] shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col border border-slate-100"
         >
           {/* Header Section */}
-          <div className="bg-slate-900 p-4 px-6 flex items-center justify-between border-b border-slate-800">
+          <div className="bg-[#020617] p-4 px-6 flex items-center justify-between border-b border-slate-800">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-emerald-600 rounded-lg text-white shadow-lg shadow-emerald-600/30">
+              <div className="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-600/30">
                 <Building2 className="w-5 h-5" />
               </div>
               <div>
                 <h2 className="text-sm font-bold text-white uppercase tracking-widest">
                   Infrastructure Management
                 </h2>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] mt-0.5">View Department Details</p>
+                <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.2em] mt-0.5">View Department Details</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white transition-colors"
+              className="p-1.5 hover:bg-white/10 rounded-lg text-slate-500 hover:text-white transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -147,7 +147,7 @@ const DeptView = ({ isOpen, onClose, department }) => {
           <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex justify-end">
             <button
               onClick={onClose}
-              className="px-6 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-xl shadow-slate-200 transition-all active:scale-95 border border-slate-700"
+              className="px-6 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg shadow-xl shadow-indigo-100 transition-all active:scale-95 border border-indigo-500/50"
             >
               Close View
             </button>
